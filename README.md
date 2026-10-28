@@ -2,7 +2,7 @@
 
 ![Nyan Mona animation](docs/preview.gif)
 
-A self-contained pixel animation for the **Universe 2026 MonaOS runtime** linked from https://badger.github.io/. Includes an original pixel-art interpretation of GitHub’s Mona the Octocat with flexing tentacles, wavy rainbow, parallax stars, pause, and five speeds. No downloads, Wi-Fi, or audio required.
+A self-contained pixel animation for the **Universe 2026 MonaOS runtime** linked from https://badger.github.io/. Includes an original pixel-art interpretation of GitHub’s Mona the Octocat with flexing tentacles, a wavy rainbow trail of GitHub contribution squares, parallax stars, pause, and five speeds. The squares scroll with varied activity brightness in six rainbow rows. No downloads, Wi-Fi, or audio required.
 
 ## Install
 

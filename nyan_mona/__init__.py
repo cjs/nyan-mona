@@ -16,9 +16,14 @@ PALETTE = {
     "T": color.rgb(255, 217, 186),
     "B": color.rgb(104, 196, 240),
 }
-RAINBOW = tuple(color.rgb(*rgb) for rgb in (
+RAINBOW_RGB = (
     (255, 65, 90), (255, 161, 61), (255, 227, 81),
-    (100, 230, 112), (65, 188, 255), (168, 112, 255)))
+    (100, 230, 112), (65, 188, 255), (168, 112, 255))
+# Contribution levels are tinted toward the starfield, keeping every row's hue.
+RAINBOW = tuple(tuple(color.rgb(*(
+    bg + (channel - bg) * level // 100
+    for channel, bg in zip(rgb, (9, 18, 49))))
+    for level in (12, 35, 65, 100)) for rgb in RAINBOW_RGB)
 BACKGROUND = color.rgb(9, 18, 49)
 WHITE = color.rgb(224, 239, 255)
 DIM = color.rgb(130, 158, 197)
@@ -88,6 +93,26 @@ def mona(x, y, scale, frame):
         pixel(px, py, width, 1, pen)
 
 
+def rainbow_trail(x, y, scale, time):
+    cell = 2 * scale
+    pitch = 3 * scale
+    travel = time * 24 * scale
+    first_column = int(travel // pitch)
+    offset = int(travel % pitch)
+    end = x + 5 * scale
+    for column in range((end + offset) // pitch + 1):
+        rx = column * pitch - offset
+        wave = int(math.sin((rx - x) / (8.0 * scale) + time * 12) * scale)
+        # A cell keeps its activity level as it scrolls away from Mona.
+        world_column = first_column + column
+        for row, levels in enumerate(RAINBOW):
+            activity = ((world_column * 37 + row * 67)
+                        ^ (world_column * 13 + row * 31) >> 2) % 11
+            level = 0 if activity == 0 else 1 if activity < 4 else 2 if activity < 7 else 3
+            block(rx, y + (row * 3 - 1) * scale + wave,
+                  min(cell, end - rx), cell, levels[level])
+
+
 def update():
     global elapsed, speed_index, paused, show_controls
     if badge.pressed(BUTTON_SELECT):
@@ -116,11 +141,7 @@ def update():
         block(sx - radius, sy, radius * 2 + 1, 1, WHITE)
         block(sx, sy - radius, 1, radius * 2 + 1, WHITE)
 
-    # Waves move away from Mona, making a continuous rainbow exhaust.
-    for rx in range(0, x + 5 * scale, 4 * scale):
-        wave = int(math.sin((rx - x) / (8.0 * scale) + elapsed * 12) * scale)
-        for stripe, pen in enumerate(RAINBOW):
-            block(rx, y + (2 + stripe * 2) * scale + wave, 4 * scale, 2 * scale, pen)
+    rainbow_trail(x, y, scale, elapsed)
     mona(x, y, scale, frame)
 
     screen.pen = WHITE

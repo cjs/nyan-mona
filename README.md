@@ -17,8 +17,21 @@ Alternatively, copy `nyan_mona` into the writable `apps` folder on the BADGER di
 
 - SELECT: pause / resume.
 - LEFT / RIGHT: select 0.5x, 1x, 1.5x, 2x, or 3x speed.
+- UP: toggle the motion response, shown as MOTION ON or MOTION OFF.
 - MENU: hide / show controls.
 - HOME: return to MonaOS (handled by the operating system).
+
+Move the badge to give Mona and her trail a small temporary lean, capped at
+10 degrees, and a gentle extra rainbow ripple. Hold it still at any angle and
+Mona eases back to screen-upright while the rainbow returns to its normal wave.
+The contribution squares remain distinct. This replaces gravity leveling;
+stars and text stay fixed to the screen.
+
+The motion response starts disabled each time the app opens. Press the front
+UP button to enable it at the badge's current resting angle; press UP again to
+ease Mona upright. The response remains active while paused and does not depend
+on animation speed. Laying the badge flat also eases Mona upright. Automatic
+screen flipping is disabled in the app and restored on exit.
 
 For the developer simulator at https://badger.github.io/, replace the example app code with `__init__.py` and run it.
 
@@ -35,11 +48,23 @@ With Python 3.10 or newer, run static validation from the repository root:
 
 ```bash
 python3 .github/skills/hyb26-skill/scripts/validate_app.py ./nyan_mona
+python3 -m unittest discover -s tests
 ```
 
 The app stays in `nyan_mona/`. Use that path instead of the skill's example
 `badge/apps/<name>` paths. Static checks do not replace testing the display,
 buttons, HOME/re-open behavior, and menu icon on a physical badge.
+
+For motion, enable UP while holding the badge at an angle and check that Mona
+does not lean until the badge moves. Turn it both ways and check for a small
+temporary lean and stronger rainbow ripple. Hold it still at the new angle for
+a few seconds and check that Mona returns to screen-upright and the ripple
+settles. Cross upside-down to check for jumps, then lay it flat in both
+directions. Repeat while paused and at each speed. Toggle UP in both paused and
+running states, and check that the contribution squares remain distinct with
+no thin rainbow line in front of Mona.
+Press HOME and reopen to check that the launcher's automatic screen orientation
+has been restored.
 
 ### Updating the bundled skill
 

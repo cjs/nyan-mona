@@ -24,4 +24,39 @@ For the developer simulator at https://badger.github.io/, replace the example ap
 
 Targets the 2026 graphics/input API; not the older e-ink Badger or 2025 runtime. Checked with a host-side runtime stub; actual badge display and buttons still require device testing.
 
+## Development
+
+This repository includes [hyb26-skill](.github/skills/hyb26-skill/SKILL.md)
+with its scripts, references, and tests. Copilot discovers it in
+`.github/skills/`; [AGENTS.md](AGENTS.md) directs badge work to it. No personal
+skill installation is required.
+
+With Python 3.10 or newer, run static validation from the repository root:
+
+```bash
+python3 .github/skills/hyb26-skill/scripts/validate_app.py ./nyan_mona
+```
+
+The app stays in `nyan_mona/`. Use that path instead of the skill's example
+`badge/apps/<name>` paths. Static checks do not replace testing the display,
+buttons, HOME/re-open behavior, and menu icon on a physical badge.
+
+### Updating the bundled skill
+
+The bundled copy comes from the `hyb26-skill` personal installation. After
+updating that installation, refresh the repository copy from a macOS or Linux
+terminal at the repository root. This does not require an AI session:
+
+```bash
+rsync -a \
+  --exclude='__pycache__' --exclude='*.py[cod]' \
+  --exclude='.DS_Store' --exclude='._*' \
+  "$HOME/.copilot/skills/hyb26-skill/" .github/skills/hyb26-skill/
+python3 -m unittest discover -s .github/skills/hyb26-skill/tests
+```
+
+Review the changes before committing. The copy keeps destination-only files;
+check upstream removals separately. In an open Copilot CLI session, use
+`/skills reload` or restart the session to load the updated skill.
+
 This is an unofficial fan-made mascot animation, not an official GitHub asset. The original Nyan Cat app remains a separate installation.
